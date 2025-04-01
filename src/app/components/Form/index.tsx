@@ -113,7 +113,7 @@ export const Form = () => {
       productType: PRODUCT_TYPES.CRUISE,
       productPrice: "1000",
       productItinerary: {
-        summary: "",
+        summary: "This is a summary of the product's itinerary",
         image: "https://picsum.photos/id/49/1280/792",
         itineraries: [
           {
@@ -216,6 +216,19 @@ export const Form = () => {
     })
   }
 
+  const handleProductItineraryChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    const type = name.split("-")[1] // name should always be productItinerary-[type]
+
+    setFormData({
+      ...formData,
+      productItinerary: {
+        ...formData.productItinerary,
+        [type]: value,
+      },
+    })
+  }
+
   return (
     <Grid container direction="row" spacing={4} size={{ xs: 12, md: 6 }}>
       <Grid
@@ -273,9 +286,39 @@ export const Form = () => {
         <Grid>
           {formData.productItinerary?.summary?.length ||
           formData.productItinerary?.itineraries?.length ? (
-            <Typography variant="h4" mb={2}>
-              Itineraries
-            </Typography>
+            <>
+              <Typography variant="h4" mb={2}>
+                Itineraries
+              </Typography>
+              <Stack spacing={2} mb={2}>
+                <TextField
+                  fullWidth
+                  name="productItinerary-summary"
+                  label="Summary"
+                  aria-label="Summary"
+                  placeholder="Product XYZ summary"
+                  onChange={handleProductItineraryChange}
+                  value={formData.productItinerary?.summary}
+                />
+                <TextField
+                  fullWidth
+                  name="productItinerary-image"
+                  label="Image URL"
+                  aria-label="Image URL"
+                  placeholder="https://picsum.photos/200"
+                  onChange={handleProductItineraryChange}
+                  value={formData.productItinerary?.image}
+                />
+                {formData.productItinerary?.image && (
+                  <Image
+                    src={formData.productItinerary?.image}
+                    width="500"
+                    height="200"
+                    alt={formData.productName}
+                  />
+                )}
+              </Stack>
+            </>
           ) : null}
           {formData.productItinerary?.itineraries?.map((itinerary, idx) => (
             <Stack
@@ -348,8 +391,8 @@ export const Form = () => {
                 {itinerary.image && (
                   <Image
                     src={itinerary.image}
-                    width='200'
-                    height='100'
+                    width="500"
+                    height="200"
                     alt={`Day ${itinerary.day} image`}
                   />
                 )}
