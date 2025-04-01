@@ -20,12 +20,38 @@ enum PRODUCT_TYPES {
   HOLIDAY_PACKAGE = "Holiday Package",
 }
 
+interface FormData {
+  productName: string
+  productType: string
+  productPrice: string
+  productItineraries: Itinerary
+  productInclusions: string[]
+  productExclusions: string[]
+}
+
+interface Itinerary {
+  summary?: string
+  image?: string
+  itineraries?: ItineraryItem[]
+}
+
+interface ItineraryItem {
+  day: number
+  icon?: string
+  image?: string
+  content?: string
+}
+
 export const Form = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     productName: "",
     productType: "",
-    productPrice: null,
-    productItineraries: [],
+    productPrice: "",
+    productItineraries: {
+      summary: "",
+      image: "",
+      itineraries: [],
+    },
     productInclusions: [],
     productExclusions: [],
   })
@@ -55,8 +81,39 @@ export const Form = () => {
     setFormData({
       productName: "",
       productType: "",
-      productPrice: null,
-      productItineraries: [],
+      productPrice: "",
+      productItineraries: {
+        summary: "",
+        image: "",
+        itineraries: [],
+      },
+      productInclusions: [],
+      productExclusions: [],
+    })
+
+  const handleFillForm = () =>
+    setFormData({
+      productName: "Product XYZ",
+      productType: PRODUCT_TYPES.CRUISE,
+      productPrice: "1000",
+      productItineraries: {
+        summary: "",
+        image: "",
+        itineraries: [
+          {
+            day: 1,
+            icon: "https://example.com/icon.png",
+            image: "https://example.com/image.png",
+            content: "Day 1 content",
+          },
+          {
+            day: 2,
+            icon: "https://example.com/icon.png",
+            image: "https://example.com/image.png",
+            content: "Day 2 content",
+          },
+        ],
+      },
       productInclusions: [],
       productExclusions: [],
     })
@@ -107,11 +164,10 @@ export const Form = () => {
         <Grid>
           <TextField
             fullWidth
-            type="number"
             name="productPrice"
             label="Product price"
             aria-label="Product price"
-            placeholder="Product price"
+            placeholder="199.99"
             onChange={handleChange}
             value={formData.productPrice}
           />
@@ -120,6 +176,13 @@ export const Form = () => {
           <Stack direction="row" spacing={3}>
             <Button variant="contained" onClick={handleGenerateJson}>
               Generate JSON!
+            </Button>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleFillForm}
+            >
+              Fill form
             </Button>
             <Button variant="contained" color="warning" onClick={handleReset}>
               Reset form
